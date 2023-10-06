@@ -1,4 +1,139 @@
-# starlight :stars:
+# Starlight Tutorial - Short Edition
+
+In order to follow this tutorial you need to use a Linux/Mac terminal or WSL in a Windows Machine. 
+
+## Requirements
+
+Starlight uses Node and Typescript. Hence, prior to use it please check you have both of
+them working properly. The Node version required is *v16*
+
+```shell
+node -v
+```
+
+```shell
+tsc -v
+```
+
+Then, follow the next steps:
+
+. Clone Starlight repo
+
+```shell
+git clone git@github.com:EYBlockchain/starlight.git
+```
+
+. Access the startlight directory
+
+```shell
+cd starlight
+```
+
+. Install the node dependencies
+
+```shell
+npm install
+```
+
+. Run Typescript
+
+```shell
+tsc
+```
+
+. Give execution permission to the `start` script in the `bin` folder
+
+```shell
+chmod +x bin/start
+```
+
+. Execute the `start` script
+
+```shell
+./bin/start
+```
+
+Congratulations! You have **zappify** in your machine.
+
+Now, let's create a simple proof of concept to allow to test Starlight. In our use case you want to store in a private manner your date of birth.
+
+So, in order to build our PoC follow the next steps:
+
+. Create the folder `mycontract` and access it.
+
+```shell
+mkdir mycontract && cd mycontract
+```
+
+. Develop a normal Solidity contract and save it as `birthcertificate.sol`
+
+```solidity
+// SPDX-License-Identifier: MIT
+
+pragma solidity 0.8.0;
+
+contract BirthCertificate {
+
+  uint256 dateOfBirth; 
+
+  function assign(uint256 date_) public { 
+    dateOfBirth = date_;
+  }
+}
+```
+
+IMPORTANT: Pay attention to Solidity version. Now it supports 0.8.0
+
+But we want to keep the variable **dateOfBirth** secret. Hence, create a special file `birthcertificate.zol` with the `birthcertificate.sol` content, then add `secret` in front of each declaration you want to keep secret:
+
+```solidity
+// SPDX-License-Identifier: MIT
+
+pragma solidity 0.8.0;
+
+contract BirthCertificate {
+
+  secret uint256 private dateOfBirth; // <--- secret
+
+  function assign(secret uint256 date_) public { // <--- secret
+    dateOfBirth = date_;
+  }
+}
+```
+
+. Save it.
+
+. Run
+
+```shell
+zappify -i ./mycontract/birthcertificate.zol
+```
+
+. Access the the newly-created zApp. It will be located in a folder called ./zapps/birthcertificate. Let's step into that directory.
+
+```shell
+cd zapps/birthcertificate
+```
+
+. Install dependencies:
+
+```shell
+npm install
+```
+
+. You might need to run chmod +x ./bin/setup && chmod +x ./bin/startup for permission to execute the newly created shell scripts
+
+```shell
+chmod +x ./bin/setup && chmod +x ./bin/startup
+```
+
+. Run the tests
+
+```shell
+npm test
+```
+
+# starlight :stars: - Full and original edition
 
 Generate a zApp from a Solidity contract.
 

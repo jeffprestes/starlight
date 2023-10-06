@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
+
+contract BirthCertificate {
+
+  secret uint256 private dateOfBirth; // <--- secret
+
+  address owner;
+
+  constructor() {
+    owner = msg.sender;
+  }
+
+  function assign(secret uint256 date_) public { // <--- secret
+    dateOfBirth = date_;
+  }
+}
