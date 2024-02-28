@@ -808,6 +808,16 @@ zappFilesBoilerplate = () => {
       generic: true,
     },
     {
+      readPath: pathPrefix + '/scripts/deploy.js',
+      writePath: 'scripts/deploy.js',
+      generic: true,
+    },
+    {
+      readPath: pathPrefix + '/env.example',
+      writePath: '.env',
+      generic: true,
+    },
+    {
       readPath: pathPrefix + '/boilerplate-package.json',
       writePath: './package.json',
       generic: true,
@@ -858,8 +868,8 @@ zappFilesBoilerplate = () => {
       generic: true,
     },
     {
-      readPath: pathPrefix + '/truffle-config.js',
-      writePath: './truffle-config.js',
+      readPath: pathPrefix + '/hardhat.config.js',
+      writePath: './hardhat.config.js',
       generic: true,
     },
     {
