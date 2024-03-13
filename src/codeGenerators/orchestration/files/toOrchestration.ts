@@ -238,9 +238,9 @@ const prepareIntegrationApiRoutes = (node: any) => {
  * @param contextDirPath - a SetupCommonFilesBoilerplate node
  */
 
-const prepareMigrationsFile = (file: localFile, node: any) => {
+const prepareDeploymentFile = (file: localFile, node: any) => {
   // insert filepath and replace with our contract and function names
-  file.filepath = `./migrations/2_shield.js`;
+  file.filepath = `./scripts/deploy.js`;
   file.file = file.file.replace(/CONTRACT_NAME/g, node.contractName);
   file.file = file.file.replace(
     /FUNCTION_NAMES/g,
@@ -432,7 +432,7 @@ export default function fileGenerator(node: any) {
       const setupfile = files.filter(obj =>
         obj.filepath.includes(`zkp-setup`),
       )[0];
-      const migrationsfile = files.filter(obj =>
+      const deploymentFile = files.filter(obj =>
         obj.filepath.includes(`shield`),
       )[0];
 
@@ -452,7 +452,7 @@ export default function fileGenerator(node: any) {
         `'${node.functionNames.join(`', '`)}'`,
       );
       // build the migrations file
-      prepareMigrationsFile(migrationsfile, node);
+      prepareDeploymentFile(deploymentFile, node);
       prepareSetupScript(startupScript, node);
       return files;
     }

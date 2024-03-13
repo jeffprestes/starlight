@@ -1,5 +1,6 @@
 const hre = require("hardhat");
 const fs = require("fs");
+
 require("dotenv").config({ path: __dirname + "/.env" });
 
 function saveMetadata (
@@ -27,7 +28,7 @@ async function main() {
   console.log("Reading verification keys...");
   const vkInput = [];
   let vk = [];
-  const functionNames = ["deposit", "transfer", "withdraw", "joinCommitments"];
+  const functionNames = [FUNCTION_NAMES];
   functionNames.forEach((name) => {
     const vkJson = JSON.parse(fs.readFileSync(`./orchestration/common/db/${name}_vk.key`, "utf-8"));
     if (vkJson.scheme) {
@@ -39,7 +40,9 @@ async function main() {
   });
   console.log("Verification keys read.");
 
-  
+  CUSTOM_CONTRACT_IMPORT
+  CUSTOM_PROOF_IMPORT
+
   console.log("Deploying Verifier...");
   const Verifier = await hre.ethers.getContractFactory("Verifier");
   const verifier = await Verifier.deploy();
@@ -48,18 +51,13 @@ async function main() {
   console.log("Verifier deployed to:", verifierAddress);
   saveMetadata(parentDirectory, "/build/contracts/verify/Verifier.sol/Verifier.json", verifierAddress, "Verifier");
 
-  
-  console.log("Deploying EscrowShield ...");
-  const EscrowShield = await hre.ethers.getContractFactory("EscrowShield");
-  const escrowShield = await EscrowShield.deploy(realTokenizedAddress, verifierAddress, vkInput);
-  await escrowShield.waitForDeployment();
-  const escrowShieldAddress = await escrowShield.getAddress();
-  console.log("EscrowShield deployed to:", escrowShieldAddress);
-  saveMetadata( parentDirectory, 
-                "/build/contracts/EscrowShield.sol/EscrowShield.json", 
-                escrowShieldAddress, 
-                "EscrowShield"
-              );
+  const CONTRACT_NAME = await hre.ethers.getContractFactory("CONTRACT_NAME");
+  const CONTRACT_NAME_instance = await CONTRACT_NAME.deploy(CUSTOM_INPUTS, verifierAddress, vkInput);
+  await CONTRACT_NAME_instance.waitForDeployment();
+  const CONTRACT_NAME_address = await CONTRACT_NAME_instance.getAddress();
+  console.log("CONTRACT_NAME deployed to:", CONTRACT_NAME_address);
+  saveMetadata(parentDirectory, "/build/contracts/CONTRACT_NAME/CONTRACT_NAME.sol/CONTRACT_NAME.json", CONTRACT_NAME_address, "CONTRACT_NAME");
+    
 }
 
 // We recommend this pattern to be able to use async/await everywhere
