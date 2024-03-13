@@ -6,6 +6,7 @@ import { collectImportFiles, localFile } from '../../common.js'
 import OrchestrationBP from '../../../boilerplate/orchestration/javascript/raw/boilerplate-generator.js';
 import codeGenerator from '../nodejs/toOrchestration.js';
 import logger from '../../../utils/logger.js';
+import { log } from 'console';
 
 
 /**
@@ -13,7 +14,7 @@ import logger from '../../../utils/logger.js';
  * @return - { filepath: 'path/to/file.zok', file: 'the code' };
  * The filepath will be used when saving the file into the new zApp's dir.
  */
- const Orchestrationbp = new OrchestrationBP();
+const Orchestrationbp = new OrchestrationBP();
 const editableCommitmentCommonFilesBoilerplate = () => {
   const importBoilerplate = Orchestrationbp.generateProof.import();
   if (!(importBoilerplate instanceof Array)) return;
@@ -198,6 +199,7 @@ const prepareIntegrationApiServices = (node: any) => {
   outputApiServiceFile = `${preprefix}\n${outputApiServiceFile}\n ${genericApiServiceFile.commitments()}\n`;
   return outputApiServiceFile;
 };
+
 const prepareIntegrationApiRoutes = (node: any) => {
   // import generic test skeleton
   let outputApiRoutesFile =``;
@@ -246,9 +248,11 @@ const prepareDeploymentFile = (file: localFile, node: any) => {
     /FUNCTION_NAMES/g,
     `'${node.functionNames.join(`', '`)}'`,
   );
+
   // collect any extra constructor parameters
   const constructorParams = node.constructorParams?.filter((obj: any) => !obj.isSecret).map((obj: any) => obj.name) || ``;
   const iwsConstructorParams = node.constructorParams?.filter((param: any) => param.interactsWithSecret === true);
+
   // initialise variables
   let customImports = ``;
   let customDeployments = ``;
@@ -353,6 +357,10 @@ const prepareDeploymentFile = (file: localFile, node: any) => {
   file.file = file.file.replace(/CUSTOM_INPUTS/g, constructorParams);
   file.file = file.file.replace(/CUSTOM_PROOF_IMPORT/g, customProofImport);
   file.file = file.file.replace(/CUSTOM_PROOF/g, customProofInputs);
+
+  logger.info(`Preparing deployment file for`);
+  logger.info(JSON.stringify(file.file));
+  fs.writeFileSync("/Users/jeffprestes/projetos/go/src/github.com/jeffprestes/starlight/test/deploy.js", file.file);
 };
 
 /**
@@ -420,7 +428,7 @@ export default function fileGenerator(node: any) {
         [
           `import './common/write-vk.mjs'`,
           `import './common/zkp-setup.mjs'`,
-          `import './common/migrations/2_shield.js'`,
+          `import './common/scripts/deploy.js'`,
         ].join('\n'),
         'orchestration',
       );
@@ -433,8 +441,8 @@ export default function fileGenerator(node: any) {
         obj.filepath.includes(`zkp-setup`),
       )[0];
       const deploymentFile = files.filter(obj =>
-        obj.filepath.includes(`shield`),
-      )[0];
+        obj.filepath.includes(`deploy`),
+      )[0];     
 
       if (node.functionNames.includes('cnstrctr')) {
         const redeployPath = path.resolve(fileURLToPath(import.meta.url), '../../../../../src/boilerplate/common/bin/redeploy');
